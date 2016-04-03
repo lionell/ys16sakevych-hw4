@@ -9,7 +9,7 @@ import java.util.Random;
  * @author Ruslan Sakevych
  */
 public class MergeSort {
-    private static final Random random = new Random();
+    private static final Random random = new Random(17);
     private static final int THREAD_COUNT =
             2 * Runtime.getRuntime().availableProcessors();
     private static final int ELEMENT_COUNT = 1000;
