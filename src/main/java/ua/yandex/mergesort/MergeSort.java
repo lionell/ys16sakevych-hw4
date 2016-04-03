@@ -28,7 +28,7 @@ public class MergeSort {
                 + "s.");
 
         printArray(a);
-        assert isSorted(a);
+        assert isSorted(a) : "Not sorted after parallelMergeSort!";
 
         startTime = System.currentTimeMillis();
         mergeSort(b);
@@ -38,7 +38,7 @@ public class MergeSort {
                 + "s.");
 
         printArray(b);
-        assert isSorted(b);
+        assert isSorted(b) : "Not sorted after mergeSort!";
     }
 
     private static int[] generateArray(int length) {
@@ -58,7 +58,7 @@ public class MergeSort {
 
     private static boolean isSorted(int[] a) {
         for (int i = 1; i < a.length; i++) {
-            if (a[i] > a[i - 1]) {
+            if (a[i] < a[i - 1]) {
                 return false;
             }
         }
