@@ -17,34 +17,52 @@ public class MergeSort {
     public static void main(String[] args) {
         int[] a = generateArray(ELEMENT_COUNT);
         int[] b = Arrays.copyOf(a, a.length);
+
         printArray(a);
+
         long startTime = System.currentTimeMillis();
         parallelMergeSort(a, THREAD_COUNT);
         long endTime = System.currentTimeMillis();
+
         System.out.println("Parallel: " + ((endTime - startTime) / 1000.0)
                 + "s.");
+
         printArray(a);
+        assert isSorted(a);
+
         startTime = System.currentTimeMillis();
         mergeSort(b);
         endTime = System.currentTimeMillis();
+
         System.out.println("Simple: " + ((endTime - startTime) / 1000.0)
                 + "s.");
+
         printArray(b);
+        assert isSorted(b);
     }
 
     private static int[] generateArray(int length) {
-        int[] array = new int[length];
+        int[] a = new int[length];
         for (int i = 0; i < length; ++i) {
-            array[i] = random.nextInt(1000);
+            a[i] = random.nextInt(1000);
         }
-        return array;
+        return a;
     }
 
-    private static void printArray(int[] array) {
-        for (int i : array) {
+    private static void printArray(int[] a) {
+        for (int i : a) {
             System.out.print(i + " ");
         }
         System.out.println();
+    }
+
+    private static boolean isSorted(int[] a) {
+        for (int i = 1; i < a.length; i++) {
+            if (a[i] > a[i - 1]) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static void parallelMergeSort(int[] a, int nThreads) {
@@ -101,17 +119,17 @@ public class MergeSort {
     }
 
     private static class Sorter implements Runnable {
-        private final int[] array;
+        private final int[] a;
         private final int nThreads;
 
-        public Sorter(int[] array, int nThreads) {
-            this.array = array;
+        public Sorter(int[] a, int nThreads) {
+            this.a = a;
             this.nThreads = nThreads;
         }
 
         @Override
         public void run() {
-            parallelMergeSort(array, nThreads);
+            parallelMergeSort(a, nThreads);
         }
     }
 }
