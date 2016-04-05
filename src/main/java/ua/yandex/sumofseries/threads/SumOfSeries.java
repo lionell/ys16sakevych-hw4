@@ -1,6 +1,7 @@
 package ua.yandex.sumofseries.threads;
 
 import ua.yandex.sumofseries.SineCosineFunction;
+import ua.yandex.utils.Logger;
 
 import java.util.function.DoubleUnaryOperator;
 
@@ -11,13 +12,14 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class SumOfSeries {
     public static void main(String[] args) {
-        System.out.println(SumOfSeries.eval(20, 2));
+        Logger.log(Double.toString(SumOfSeries.eval(20, 2)));
     }
 
     public static double eval(double N, int M) {
         Calculator calculatorPool[] = new Calculator[M - 1];
         Thread threadPool[] = new Thread[M - 1];
         final double step = 2 * N / M;
+
         for (int i = 0; i < M - 1; i++) {
             calculatorPool[i] = new Calculator(
                     new SineCosineFunction(),

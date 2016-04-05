@@ -1,5 +1,7 @@
 package ua.yandex.mergesort;
 
+import ua.yandex.utils.Logger;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -24,8 +26,7 @@ public class MergeSort {
         parallelMergeSort(a, THREAD_COUNT);
         long endTime = System.currentTimeMillis();
 
-        System.out.println("Parallel: " + ((endTime - startTime) / 1000.0)
-                + "s.");
+        Logger.logFormat("Parallel: %fs.", (endTime - startTime) / 1000d);
 
         printArray(a);
         assert isSorted(a) : "Not sorted after parallelMergeSort!";
@@ -34,8 +35,7 @@ public class MergeSort {
         mergeSort(b);
         endTime = System.currentTimeMillis();
 
-        System.out.println("Simple: " + ((endTime - startTime) / 1000.0)
-                + "s.");
+        Logger.logFormat("Simple: %fs.", (endTime - startTime) / 1000d);
 
         printArray(b);
         assert isSorted(b) : "Not sorted after mergeSort!";
@@ -50,10 +50,11 @@ public class MergeSort {
     }
 
     private static void printArray(int[] a) {
+        StringBuilder builder = new StringBuilder();
         for (int i : a) {
-            System.out.print(i + " ");
+            builder.append(i).append(" ");
         }
-        System.out.println();
+        Logger.log(builder.toString());
     }
 
     private static boolean isSorted(int[] a) {

@@ -1,6 +1,7 @@
 package ua.yandex.sumofseries.utilconcurrent;
 
 import ua.yandex.sumofseries.SineCosineFunction;
+import ua.yandex.utils.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,13 +19,14 @@ import java.util.function.DoubleUnaryOperator;
  */
 public class SumOfSeries {
     public static void main(String[] args) {
-        System.out.println(SumOfSeries.eval(20, 2));
+        Logger.log(Double.toString(SumOfSeries.eval(20, 2)));
     }
 
     public static double eval(double N, int M) {
         ExecutorService threadPool = Executors.newFixedThreadPool(M);
         List<Calculator> calculatorPool = new ArrayList<>();
         final double step = 2 * N / M;
+
         for (int i = 0; i < M; i++) {
             calculatorPool.add(new Calculator(
                     new SineCosineFunction(),

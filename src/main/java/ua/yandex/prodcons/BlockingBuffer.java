@@ -6,9 +6,9 @@ package ua.yandex.prodcons;
  * @author Ruslan Sakevych
  */
 public interface BlockingBuffer<T> {
-    void push(T value) throws InterruptedException;
+    void enqueue(T value) throws InterruptedException;
 
-    T pop() throws InterruptedException;
+    T dequeue() throws InterruptedException;
 
     void close();
 }

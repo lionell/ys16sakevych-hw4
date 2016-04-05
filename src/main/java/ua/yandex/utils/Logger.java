@@ -8,7 +8,15 @@ package ua.yandex.utils;
 public class Logger {
     public static void log(String message) {
         String currentThread = Thread.currentThread().getName();
-        System.out.println("[" + currentThread + "]: " + message);
+        System.out.printf("[%s]: %s\n", currentThread, message);
+    }
 
+    public static void logFormat(String format, Object... args) {
+        String currentThread = Thread.currentThread().getName();
+        Object[] fullArgs = new Object[args.length + 1];
+        fullArgs[0] = currentThread;
+        System.arraycopy(args, 0, fullArgs, 1, args.length);
+        String fullFormat = "[%s]: " + format + "\n";
+        System.out.printf(fullFormat, fullArgs);
     }
 }

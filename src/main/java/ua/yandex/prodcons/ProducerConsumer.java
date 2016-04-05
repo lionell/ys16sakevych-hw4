@@ -1,6 +1,7 @@
-package ua.yandex.prodcons.threads;
+package ua.yandex.prodcons;
 
-import ua.yandex.prodcons.BlockingBuffer;
+import ua.yandex.prodcons.threads.SynchronizedRingBuffer;
+import ua.yandex.prodcons.utilconcurrent.ConcurrentRingBuffer;
 
 import java.util.Random;
 
@@ -14,7 +15,8 @@ public class ProducerConsumer {
     private static final int MAX_WAIT_MILLIS = 1000;
 
     public static void main(String[] args) {
-        BlockingBuffer<Integer> buffer = new BlockingRingBuffer<>(5);
+//        BlockingBuffer<Integer> buffer = new SynchronizedRingBuffer<>(5);
+        BlockingBuffer<Integer> buffer = new ConcurrentRingBuffer<>(5);
         (new Producer(buffer)).start();
         (new Producer(buffer)).start();
         (new Producer(buffer)).start();
@@ -24,20 +26,21 @@ public class ProducerConsumer {
     }
 
     private static class Producer extends Thread {
-        private static int nextID = 0;
+        private static int nextId = 0;
         private final int id;
         private final BlockingBuffer<Integer> buffer;
 
-        public Producer(BlockingBuffer<Integer> buffer) {
+        private Producer(BlockingBuffer<Integer> buffer) {
+            super("producer-" + nextId);
             this.buffer = buffer;
-            id = nextID++;
+            id = nextId++;
         }
 
         @Override
         public void run() {
             while (!interrupted()) {
                 try {
-                    buffer.push(id * id);
+                    buffer.enqueue(id * id);
                     sleep(random.nextInt(MAX_WAIT_MILLIS));
                 } catch (InterruptedException e) {
                     break;
@@ -47,17 +50,20 @@ public class ProducerConsumer {
     }
 
     private static class Consumer extends Thread {
+        private static int nextId = 0;
         private final BlockingBuffer<Integer> buffer;
 
-        public Consumer(BlockingBuffer<Integer> buffer) {
+        private Consumer(BlockingBuffer<Integer> buffer) {
+            super("consumer-" + nextId);
             this.buffer = buffer;
+            nextId++;
         }
 
         @Override
         public void run() {
             while (!interrupted()) {
                 try {
-                    buffer.pop();
+                    buffer.dequeue();
                     sleep(random.nextInt(MAX_WAIT_MILLIS));
                 } catch (InterruptedException e) {
                     break;

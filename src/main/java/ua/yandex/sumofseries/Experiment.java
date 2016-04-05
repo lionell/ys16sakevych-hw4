@@ -1,5 +1,7 @@
 package ua.yandex.sumofseries;
 
+import ua.yandex.utils.Logger;
+
 /**
  * Created by lionell on 4/3/16.
  *
@@ -14,10 +16,11 @@ public class Experiment {
     public static void main(String[] args) {
         for (int threadCount = MIN_THREADS; threadCount <= MAX_THREADS;
              threadCount++) {
-            double threads = benchmarkThreads(threadCount);
-            System.out.println(threadCount + " THREADS " + threads);
-            double concurrent = benchmarkConcurrent(threadCount);
-            System.out.println(threadCount + " CONCURRENT " + concurrent);
+            double threadsTime = benchmarkThreads(threadCount);
+            Logger.logFormat("%d THREADS %f", threadCount, threadsTime);
+
+            double concurrentTime = benchmarkConcurrent(threadCount);
+            Logger.logFormat("%d CONCURRENT %f", threadCount, concurrentTime);
         }
     }
 
@@ -26,7 +29,9 @@ public class Experiment {
         double val = ua.yandex.sumofseries.utilconcurrent.SumOfSeries.eval(N,
                 threadCount);
         long endTime = System.currentTimeMillis();
+
         assert Math.abs(val) < 1e-4;
+
         return (endTime - startTime) / 1e3;
     }
 
@@ -35,7 +40,9 @@ public class Experiment {
         double val = ua.yandex.sumofseries.threads.SumOfSeries.eval(N,
                 threadCount);
         long endTime = System.currentTimeMillis();
+
         assert Math.abs(val) < 1e-4;
+
         return (endTime - startTime) / 1e3;
     }
 }

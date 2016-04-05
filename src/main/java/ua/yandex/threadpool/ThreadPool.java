@@ -1,7 +1,7 @@
 package ua.yandex.threadpool;
 
 import ua.yandex.prodcons.BlockingBuffer;
-import ua.yandex.prodcons.threads.BlockingRingBuffer;
+import ua.yandex.prodcons.threads.SynchronizedRingBuffer;
 import ua.yandex.utils.Logger;
 
 import java.util.LinkedList;
@@ -22,7 +22,7 @@ public class ThreadPool {
     private volatile boolean finished = false;
 
     public ThreadPool(int nThreads) {
-        tasks = new BlockingRingBuffer<>(nThreads);
+        tasks = new SynchronizedRingBuffer<>(nThreads);
         threads = new LinkedList<>();
 
         for (int i = 0; i < nThreads; i++) {
@@ -54,7 +54,7 @@ public class ThreadPool {
 
     public void execute(Runnable task) {
         try {
-            tasks.push(task);
+            tasks.enqueue(task);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -87,7 +87,7 @@ public class ThreadPool {
             while (!finished) {
                 Runnable task;
                 try {
-                    task = tasks.pop();
+                    task = tasks.dequeue();
                 } catch (InterruptedException ignored) {
                     break;
                 }
@@ -103,7 +103,7 @@ public class ThreadPool {
         private static int nextID = 0;
         private final int id;
 
-        public DummyRunnable() {
+        private DummyRunnable() {
             id = nextID++;
         }
 
