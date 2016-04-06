@@ -1,6 +1,6 @@
 package ua.yandex.prodcons;
 
-import ua.yandex.prodcons.threads.SynchronizedRingBuffer;
+import ua.yandex.misc.NamedThread;
 import ua.yandex.prodcons.utilconcurrent.ConcurrentRingBuffer;
 
 import java.util.Random;
@@ -25,15 +25,12 @@ public class ProducerConsumer {
         (new Consumer(buffer)).start();
     }
 
-    private static class Producer extends Thread {
-        private static int nextId = 0;
-        private final int id;
+    private static class Producer extends NamedThread {
         private final BlockingBuffer<Integer> buffer;
 
         private Producer(BlockingBuffer<Integer> buffer) {
-            super("producer-" + nextId);
+            super("producer");
             this.buffer = buffer;
-            id = nextId++;
         }
 
         @Override
@@ -49,14 +46,12 @@ public class ProducerConsumer {
         }
     }
 
-    private static class Consumer extends Thread {
-        private static int nextId = 0;
+    private static class Consumer extends NamedThread {
         private final BlockingBuffer<Integer> buffer;
 
         private Consumer(BlockingBuffer<Integer> buffer) {
-            super("consumer-" + nextId);
+            super("consumer");
             this.buffer = buffer;
-            nextId++;
         }
 
         @Override

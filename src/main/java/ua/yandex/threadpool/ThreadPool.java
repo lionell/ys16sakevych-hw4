@@ -1,12 +1,13 @@
 package ua.yandex.threadpool;
 
+import ua.yandex.misc.DummyRunnable;
+import ua.yandex.misc.NamedThread;
 import ua.yandex.prodcons.BlockingBuffer;
 import ua.yandex.prodcons.threads.SynchronizedRingBuffer;
 import ua.yandex.utils.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by lionell on 4/4/16.
@@ -14,9 +15,6 @@ import java.util.Random;
  * @author Ruslan Sakevych
  */
 public class ThreadPool {
-    private static final Random random = new Random(17);
-    private static int nextPoolThreadId = 0;
-
     private final BlockingBuffer<Runnable> tasks;
     private final List<PoolThread> threads;
     private volatile boolean finished = false;
@@ -73,13 +71,12 @@ public class ThreadPool {
         }
     }
 
-    private class PoolThread extends Thread {
+    private class PoolThread extends NamedThread {
         private final BlockingBuffer<Runnable> tasks;
 
         public PoolThread(BlockingBuffer<Runnable> tasks) {
-            super("poolThread-" + nextPoolThreadId);
+            super("poolThread");
             this.tasks = tasks;
-            nextPoolThreadId++;
         }
 
         @Override
@@ -96,31 +93,6 @@ public class ThreadPool {
                     task.run();
                 }
             }
-        }
-    }
-
-    private static class DummyRunnable implements Runnable {
-        private static int nextID = 0;
-        private final int id;
-
-        private DummyRunnable() {
-            id = nextID++;
-        }
-
-        @Override
-        public void run() {
-            Logger.log(this + " started.");
-            try {
-                Thread.sleep(random.nextInt(1000));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            Logger.log(this + " finished.");
-        }
-
-        @Override
-        public String toString() {
-            return "DummyRunnable{" + id + "}";
         }
     }
 }

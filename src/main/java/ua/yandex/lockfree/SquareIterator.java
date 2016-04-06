@@ -1,5 +1,6 @@
 package ua.yandex.lockfree;
 
+import ua.yandex.misc.NamedThread;
 import ua.yandex.utils.Logger;
 
 import java.math.BigInteger;
@@ -30,7 +31,7 @@ public class SquareIterator implements Iterator<BigInteger> {
 
         Thread[] threadPool = new Thread[10];
         for (int i = 0; i < threadPool.length; i++) {
-            threadPool[i] = new DummyCounter(iterator);
+            threadPool[i] = new DummyConsumer(iterator);
         }
 
         for (Thread thread : threadPool) {
@@ -81,14 +82,12 @@ public class SquareIterator implements Iterator<BigInteger> {
         return true;
     }
 
-    private static class DummyCounter extends Thread {
-        private static int nextId = 0;
+    private static class DummyConsumer extends NamedThread {
         private final SquareIterator iterator;
 
-        private DummyCounter(SquareIterator iterator) {
-            super("dummyCounter-" + nextId);
+        private DummyConsumer(SquareIterator iterator) {
+            super("consumer");
             this.iterator = iterator;
-            nextId++;
         }
 
         @Override
