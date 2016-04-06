@@ -1,9 +1,9 @@
 package ua.yandex.mergesort;
 
 import ua.yandex.utils.Logger;
+import ua.yandex.utils.RandomUtils;
 
 import java.util.Arrays;
-import java.util.Random;
 
 /**
  * Created by lionell on 4/3/16.
@@ -11,16 +11,15 @@ import java.util.Random;
  * @author Ruslan Sakevych
  */
 public class MergeSort {
-    private static final Random random = new Random(17);
     private static final int THREAD_COUNT =
             2 * Runtime.getRuntime().availableProcessors();
     private static final int ELEMENT_COUNT = 1000;
 
     public static void main(String[] args) {
-        int[] a = generateArray(ELEMENT_COUNT);
+        int[] a = RandomUtils.randomIntArray(ELEMENT_COUNT);
         int[] b = Arrays.copyOf(a, a.length);
 
-        printArray(a);
+        Logger.logIntArray(a);
 
         long startTime = System.currentTimeMillis();
         parallelMergeSort(a, THREAD_COUNT);
@@ -28,7 +27,7 @@ public class MergeSort {
 
         Logger.logFormat("Parallel: %fs.", (endTime - startTime) / 1000d);
 
-        printArray(a);
+        Logger.logIntArray(a);
         assert isSorted(a) : "Not sorted after parallelMergeSort!";
 
         startTime = System.currentTimeMillis();
@@ -37,24 +36,8 @@ public class MergeSort {
 
         Logger.logFormat("Simple: %fs.", (endTime - startTime) / 1000d);
 
-        printArray(b);
+        Logger.logIntArray(b);
         assert isSorted(b) : "Not sorted after mergeSort!";
-    }
-
-    private static int[] generateArray(int length) {
-        int[] a = new int[length];
-        for (int i = 0; i < length; ++i) {
-            a[i] = random.nextInt(1000);
-        }
-        return a;
-    }
-
-    private static void printArray(int[] a) {
-        StringBuilder builder = new StringBuilder();
-        for (int i : a) {
-            builder.append(i).append(" ");
-        }
-        Logger.log(builder.toString());
     }
 
     private static boolean isSorted(int[] a) {

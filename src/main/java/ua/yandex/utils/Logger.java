@@ -11,6 +11,13 @@ public class Logger {
         System.out.printf("[%s]: %s\n", currentThread, message);
     }
 
+    public static void logIntArray(int[] a) {
+        for (int i : a) {
+            System.out.println(i + " ");
+        }
+        System.out.println();
+    }
+
     public static void logFormat(String format, Object... args) {
         String currentThread = Thread.currentThread().getName();
         Object[] fullArgs = new Object[args.length + 1];
